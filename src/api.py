@@ -220,10 +220,14 @@ def get_top_risk_factors(features: dict, model: xgb.XGBClassifier, n: int = 3) -
         if len(risk_factors) >= n:
             break
         if importance > 0.01:  # Only significant features
+            # Convert numpy types to Python native types for JSON serialization
+            value = features.get(feat, 0)
+            if hasattr(value, 'item'):  # numpy scalar
+                value = value.item()
             risk_factors.append({
                 "feature": feat,
-                "value": features.get(feat, 0),
-                "importance": round(importance, 4)
+                "value": float(value) if isinstance(value, (int, float)) else value,
+                "importance": float(importance)
             })
     
     return risk_factors

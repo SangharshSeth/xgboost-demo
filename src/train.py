@@ -173,14 +173,14 @@ def evaluate_model(model: xgb.XGBClassifier, X_test, y_test) -> dict:
     y_pred = model.predict(X_test)
     y_proba = model.predict_proba(X_test)[:, 1]
     
-    # Calculate metrics
+    # Calculate metrics (convert numpy types to Python native types)
     metrics = {
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred, zero_division=0),
-        "recall": recall_score(y_test, y_pred, zero_division=0),
-        "f1": f1_score(y_test, y_pred, zero_division=0),
-        "roc_auc": roc_auc_score(y_test, y_proba),
-        "pr_auc": average_precision_score(y_test, y_proba),
+        "accuracy": float(accuracy_score(y_test, y_pred)),
+        "precision": float(precision_score(y_test, y_pred, zero_division=0)),
+        "recall": float(recall_score(y_test, y_pred, zero_division=0)),
+        "f1": float(f1_score(y_test, y_pred, zero_division=0)),
+        "roc_auc": float(roc_auc_score(y_test, y_proba)),
+        "pr_auc": float(average_precision_score(y_test, y_proba)),
     }
     
     # Confusion matrix
