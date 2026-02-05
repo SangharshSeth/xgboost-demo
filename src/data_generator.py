@@ -916,12 +916,19 @@ def generate_dataset(seed: int = 42, output_dir: str = "data") -> tuple[pd.DataF
         for t in transactions
     ])
     
-    # Save to parquet
-    customers_path = os.path.join(output_dir, "customers.parquet")
-    transactions_path = os.path.join(output_dir, "transactions.parquet")
+    # Save to parquet (for efficient processing)
+    customers_parquet_path = os.path.join(output_dir, "customers.parquet")
+    transactions_parquet_path = os.path.join(output_dir, "transactions.parquet")
     
-    customers_df.to_parquet(customers_path, index=False)
-    transactions_df.to_parquet(transactions_path, index=False)
+    customers_df.to_parquet(customers_parquet_path, index=False)
+    transactions_df.to_parquet(transactions_parquet_path, index=False)
+    
+    # Also save to CSV (for easy viewing and inspection)
+    customers_csv_path = os.path.join(output_dir, "customers.csv")
+    transactions_csv_path = os.path.join(output_dir, "transactions.csv")
+    
+    customers_df.to_csv(customers_csv_path, index=False)
+    transactions_df.to_csv(transactions_csv_path, index=False)
     
     # Print summary
     print("\n" + "=" * 60)
@@ -944,8 +951,12 @@ def generate_dataset(seed: int = 42, output_dir: str = "data") -> tuple[pd.DataF
     print(f"  - Negative balances: {len(transactions_df[transactions_df['balance_after'] < 0])}")
     
     print(f"\nFiles saved:")
-    print(f"  - {customers_path}")
-    print(f"  - {transactions_path}")
+    print(f"  Parquet (for efficient processing with PySpark):")
+    print(f"    - {customers_parquet_path}")
+    print(f"    - {transactions_parquet_path}")
+    print(f"  CSV (for easy viewing in Excel/text editors):")
+    print(f"    - {customers_csv_path}")
+    print(f"    - {transactions_csv_path}")
     
     return customers_df, transactions_df
 

@@ -24,6 +24,9 @@ def get_spark_session() -> SparkSession:
             .config("spark.driver.memory", "4g")
             .config("spark.sql.shuffle.partitions", "8")
             .config("spark.sql.adaptive.enabled", "true")
+            # Fix for Java 17+ SecurityManager deprecation error
+            .config("spark.driver.extraJavaOptions", "-Djava.security.manager=allow")
+            .config("spark.executor.extraJavaOptions", "-Djava.security.manager=allow")
             .getOrCreate())
 
 
